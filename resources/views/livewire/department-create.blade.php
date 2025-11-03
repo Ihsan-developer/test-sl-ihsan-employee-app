@@ -2,20 +2,89 @@
     <div class="mb-6">
         <div class="flex items-center justify-between">
             <div>
-                <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Create Department</h1>
-                <p class="text-gray-600 dark:text-gray-400">Add a new department</p>
+                <h1 class="text-2xl font-bold text-gray-900 dark:text-white">
+                    {{ $departmentId ? 'Edit Department' : 'Create Department' }}
+                </h1>
+                <p class="text-gray-600 dark:text-gray-400">
+                    {{ $departmentId ? 'Update department information' : 'Add a new department to your organization' }}
+                </p>
             </div>
             <div>
-                <a href="{{ route('departments.index') }}" class="bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-900 dark:text-white font-medium py-2 px-4 rounded-lg flex items-center">
-                    <span class="text-sm mr-2">⬅️</span>
+                <flux:button href="{{ route('departments.index') }}" variant="ghost" icon="arrow-left">
                     Back to Departments
-                </a>
+                </flux:button>
             </div>
         </div>
     </div>
 
     <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
-        <p class="text-gray-600 dark:text-gray-400">Department creation form will be implemented here.</p>
-        <p class="text-sm text-gray-500 mt-2">This is a placeholder for the department creation form.</p>
+        <form wire:submit="save">
+            <div class="space-y-6">
+                <!-- Name -->
+                <flux:input
+                    wire:model="name"
+                    label="Department Name"
+                    placeholder="e.g., Human Resources"
+                    required
+                />
+                @error('name')
+                    <span class="text-sm text-red-600">{{ $message }}</span>
+                @enderror
+
+                <!-- Code -->
+                <flux:input
+                    wire:model="code"
+                    label="Department Code"
+                    placeholder="e.g., HR"
+                    description="A unique code to identify this department"
+                    required
+                />
+                @error('code')
+                    <span class="text-sm text-red-600">{{ $message }}</span>
+                @enderror
+
+                <!-- Description -->
+                <flux:textarea
+                    wire:model="description"
+                    label="Description"
+                    placeholder="Describe the department's purpose and responsibilities..."
+                    rows="4"
+                />
+                @error('description')
+                    <span class="text-sm text-red-600">{{ $message }}</span>
+                @enderror
+
+                <!-- Manager -->
+                <flux:select wire:model="manager_id" label="Department Manager" placeholder="Select a manager">
+                    <option value="">No manager assigned</option>
+                    @foreach($employees as $employee)
+                        <option value="{{ $employee->id }}">
+                            {{ $employee->first_name }} {{ $employee->last_name }}
+                        </option>
+                    @endforeach
+                </flux:select>
+                @error('manager_id')
+                    <span class="text-sm text-red-600">{{ $message }}</span>
+                @enderror
+
+                <!-- Active Status -->
+                <flux:checkbox wire:model="is_active" label="Active">
+                    Department is active and operational
+                </flux:checkbox>
+                @error('is_active')
+                    <span class="text-sm text-red-600">{{ $message }}</span>
+                @enderror
+
+                <!-- Actions -->
+                <div class="flex justify-end gap-3 pt-4 border-t border-gray-200 dark:border-gray-700">
+                    <flux:button href="{{ route('departments.index') }}" variant="ghost">
+                        Cancel
+                    </flux:button>
+                    <flux:button type="submit" variant="primary">
+                        {{ $departmentId ? 'Update Department' : 'Create Department' }}
+                    </flux:button>
+                </div>
+            </div>
+        </form>
     </div>
 </div>
