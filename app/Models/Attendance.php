@@ -12,22 +12,14 @@ class Attendance extends Model
         'date',
         'clock_in',
         'clock_out',
-        'break_start',
-        'break_end',
-        'total_hours',
-        'overtime_hours',
         'status',
         'notes',
+        'work_hours',
     ];
 
     protected $casts = [
         'date' => 'date',
-        'clock_in' => 'datetime:H:i:s',
-        'clock_out' => 'datetime:H:i:s',
-        'break_start' => 'datetime:H:i:s',
-        'break_end' => 'datetime:H:i:s',
-        'total_hours' => 'decimal:2',
-        'overtime_hours' => 'decimal:2',
+        'work_hours' => 'decimal:2',
     ];
 
     public function employee(): BelongsTo

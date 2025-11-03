@@ -13,10 +13,11 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // Create test user
+        // Create admin user
         User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
+            'name' => 'Admin User',
+            'email' => 'admin@example.com',
+            'role' => 'admin',
         ]);
 
         // Seed departments, positions, and employees
@@ -25,5 +26,18 @@ class DatabaseSeeder extends Seeder
             PositionSeeder::class,
             EmployeeSeeder::class,
         ]);
+
+        // Create employee users for first 3 employees
+        $employees = \App\Models\Employee::limit(3)->get();
+        foreach ($employees as $index => $employee) {
+            $user = User::factory()->create([
+                'name' => $employee->full_name,
+                'email' => strtolower($employee->first_name) . '@example.com',
+                'role' => 'employee',
+            ]);
+
+            // Link user to employee
+            $employee->update(['user_id' => $user->id]);
+        }
     }
 }
