@@ -6,8 +6,18 @@ use Livewire\Volt\Volt;
 
 Route::get('/', function () {
     if (auth()->check()) {
-        return redirect()->route('dashboard');
+        $user = auth()->user();
+
+        // Redirect based on user role
+        if ($user->isAdmin()) {
+            return redirect('/dashboard');
+        }
+
+        if ($user->isEmployee()) {
+            return redirect('/employee/dashboard');
+        }
     }
+
     return view('welcome');
 })->name('home');
 
